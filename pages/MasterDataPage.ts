@@ -1,0 +1,146 @@
+import {Page,Locator} from '@playwright/test';
+import { Menu } from '../components/menu';
+import { BasePage } from './BasePage';
+
+
+export class MasterDataPage extends BasePage{
+readonly page: Page;
+readonly menu:Menu
+
+//locators
+readonly addnewBtn:Locator;
+readonly company_code:Locator;
+readonly company_name:Locator;
+readonly plant_code:Locator;
+readonly plant_name:Locator;
+readonly address:Locator;
+readonly city:Locator;
+readonly state:Locator;
+readonly pin_code:Locator;
+readonly saveBtn:Locator
+readonly export_excel:Locator;
+readonly bulk_upload:Locator;
+readonly cancelBtn:Locator;
+readonly depot_tab:Locator;
+readonly depot_code:Locator;
+readonly depot_Name:Locator;
+readonly region:Locator
+readonly contact_person:Locator;
+readonly phone_number:Locator;
+readonly Email_id:Locator;
+readonly customers_tab:Locator;
+readonly customer_code:Locator;
+readonly customer_name:Locator;
+readonly customer_type:Locator;
+readonly channel:Locator;
+readonly sales_zone:Locator;
+readonly logistics_region:Locator;
+readonly sales_area:Locator;
+readonly dist_contact_name:Locator;
+readonly dist_contact_phone:Locator;
+
+
+
+
+constructor(page:Page){
+super(page);
+this.page=page;
+this.menu=new Menu(page);
+this.addnewBtn=page.getByRole('button',{name:"Add New"});
+this.company_code=page.getByRole('textbox', { name: 'Company Code'});
+this.company_name=page.getByRole('textbox', { name: 'Company Name'});
+this.plant_code=page.getByRole('textbox', { name: 'Plant Code'});
+this.plant_name=page.getByRole('textbox', { name: 'Plant Name'});
+this.address=page.getByRole('textbox', { name: 'Address'});
+this.city=page.getByRole('textbox', { name: 'City'});
+this.state=page.getByRole('textbox', { name: 'State'});
+this.pin_code=page.getByRole('textbox', { name: 'Pin Code'});
+this.saveBtn=page.locator('button:has-text("Save")');
+this.export_excel= page.getByRole('button', { name: 'Export Excel' })
+this.bulk_upload= page.getByRole('button', { name: 'Bulk Upload' })
+this.cancelBtn= page.getByRole('button', { name: 'Cancel' })
+this.depot_tab= page.getByText('Depots')
+this.depot_code= page.getByRole('textbox', { name: 'Depot Code' })
+this.depot_Name= page.getByRole('textbox', { name: 'Depot Name' })
+this.region= page.getByRole('combobox', { name: 'Region' })
+this.contact_person= page.getByRole('textbox', { name: 'Contact Person' })
+this.phone_number= page.getByRole('textbox', { name: 'Phone Number' })
+this.Email_id= page.getByRole('textbox', { name: 'Email ID' })
+this.customers_tab=  page.getByText('Customers')
+this.customer_code=  page.getByRole('textbox', { name: 'Customer Code' })
+this.customer_name=  page.getByRole('textbox', { name: 'Customer Name' })
+this.customer_type=  page.getByRole('combobox', { name: 'Customer Type' })
+this.channel=  page.getByRole('combobox', { name: 'Channel' })
+this.sales_zone=  page.getByRole('combobox', { name: 'Sales Zone' })
+this.logistics_region=  page.getByRole('combobox', { name: 'Logistics Region' })
+this.sales_area=  page.getByRole('textbox', { name: 'Sales Area' })
+this.dist_contact_name=  page.getByRole('textbox', { name: 'Dist. Contact Name(optional)' })
+this.dist_contact_phone=  page.getByRole('textbox', { name: 'Dist. Contact Phone' })
+
+}
+
+async openMasterDataPage(){
+    await this.menu.clickMasterData();
+}
+
+async clickAddNewBtn(){
+    await this.addnewBtn.click();
+}
+
+async clickSaveBtn(){
+    await this.saveBtn.click();
+}
+async clickViewBtn(plantcode=''){
+  const row=await this.getMasterTableRow(plantcode);
+  row.getByRole('button').first().click();
+  await this.page.waitForTimeout(5000);
+
+}
+
+
+get plantFieldMap(): { [key: string]: Locator } {
+    return {
+      companyCode: this.company_code,
+      companyName: this.company_name,
+      plantCode: this.plant_code,
+      plantName: this.plant_name,
+      address: this.address,
+      city: this.city,
+      state: this.state,
+      pinCode: this.pin_code
+    };
+  }
+
+async fillPlantFields(data: { [key: string]: string }) {
+    const fieldMap = this.plantFieldMap;
+
+    for (const key in data) {
+      if (fieldMap[key]) {
+        await fieldMap[key].fill(data[key]);
+      }
+    }
+}
+
+async createPlant(data: { [key: string]: string }){
+    await this.clicktoastmsg();
+    await this.waitfornetworkstable();
+    await this.openMasterDataPage();
+    await this.clickAddNewBtn();
+    await this.fillPlantFields(data);
+    await this.clickSaveBtn();
+}
+
+async getMasterTableRow(plantcode=''){
+  return this.page.locator('tr').filter({hasText:plantcode});
+}
+
+
+}
+
+
+
+
+
+
+
+
