@@ -38,8 +38,9 @@ readonly logistics_region:Locator;
 readonly sales_area:Locator;
 readonly dist_contact_name:Locator;
 readonly dist_contact_phone:Locator;
-
-
+readonly editBtn:Locator;
+readonly updateBtn:Locator;
+readonly status:Locator;
 
 
 constructor(page:Page){
@@ -76,27 +77,47 @@ this.logistics_region=  page.getByRole('combobox', { name: 'Logistics Region' })
 this.sales_area=  page.getByRole('textbox', { name: 'Sales Area' })
 this.dist_contact_name=  page.getByRole('textbox', { name: 'Dist. Contact Name(optional)' })
 this.dist_contact_phone=  page.getByRole('textbox', { name: 'Dist. Contact Phone' })
-
+this.editBtn= page.getByRole('button', { name: 'Edit' })
+this.updateBtn= page.getByRole('button').filter({hasText:"Update"})
+this.status= page.locator('.ant-switch-inner' )
 }
 
 async openMasterDataPage(){
     await this.menu.clickMasterData();
 }
+async updatestatus(){
+    await this.clickEditBtn()
+    await this.status.click();
+    await this.clickupdateBtn();
+}
 
 async clickAddNewBtn(){
     await this.addnewBtn.click();
 }
-
+async clickEditBtn(){
+    await this.editBtn.click();
+}
+async clickupdateBtn(){
+    await this.updateBtn.click();
+}
+async clickupdateBtn2(data: { [key: string]: string }){
+    await this.fillPlantFields(data);
+    await this.updateBtn.click();
+}
 async clickSaveBtn(){
     await this.saveBtn.click();
 }
 async clickViewBtn(plantcode=''){
   const row=await this.getMasterTableRow(plantcode);
   row.getByRole('button').first().click();
-  await this.page.waitForTimeout(5000);
-
 }
 
+async updateFieldByName(locatorName: string, dataToInput: string) {
+  await this.clickEditBtn();
+  const targetLocator = (this as any)[locatorName];
+  await targetLocator.fill(dataToInput);
+  await this.clickupdateBtn();
+}
 
 get plantFieldMap(): { [key: string]: Locator } {
     return {
@@ -122,7 +143,6 @@ async fillPlantFields(data: { [key: string]: string }) {
 }
 
 async createPlant(data: { [key: string]: string }){
-    await this.clicktoastmsg();
     await this.waitfornetworkstable();
     await this.openMasterDataPage();
     await this.clickAddNewBtn();
@@ -130,9 +150,27 @@ async createPlant(data: { [key: string]: string }){
     await this.clickSaveBtn();
 }
 
-async getMasterTableRow(plantcode=''){
-  return this.page.locator('tr').filter({hasText:plantcode});
+async getMasterTableRow(mastercode=''){
+  return this.page.locator('tr').filter({hasText:mastercode});
 }
+
+async getColumnCellData(mastercode='',index=0){
+    const row=await this.getMasterTableRow(mastercode);
+    return await row.locator('td').nth(index).innerText();
+}
+
+async getstatusvalue(mastercode='',index=0){
+    const row=await this.getMasterTableRow(mastercode);
+    const status= row.locator('td').nth(index).locator('div');
+    return await status.getAttribute('title');
+}
+
+
+
+
+
+
+
 
 
 }

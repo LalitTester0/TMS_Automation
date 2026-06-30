@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "D:\\Flairminds\\playwright\\playwright.config.ts",
-    "rootDir": "D:/Flairminds/playwright/tests",
+    "configFile": "C:\\Users\\Admin\\Documents\\Flairminds\\TMS_Automation\\TMS_Automation\\playwright.config.ts",
+    "rootDir": "C:/Users/Admin/Documents/Flairminds/TMS_Automation/TMS_Automation/tests",
     "forbidOnly": false,
     "fullyParallel": false,
     "globalSetup": null,
@@ -16,7 +16,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "D:/Flairminds/playwright/test-results",
+        "outputDir": "C:/Users/Admin/Documents/Flairminds/TMS_Automation/TMS_Automation/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -24,7 +24,7 @@
         },
         "id": "",
         "name": "",
-        "testDir": "D:/Flairminds/playwright/tests",
+        "testDir": "C:/Users/Admin/Documents/Flairminds/TMS_Automation/TMS_Automation/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -60,7 +60,7 @@
     "updateSnapshots": "missing",
     "updateSourceMethod": "patch",
     "version": "1.59.1",
-    "workers": 2,
+    "workers": 4,
     "webServer": null
   },
   "suites": [
@@ -71,7 +71,7 @@
       "line": 0,
       "specs": [
         {
-          "title": "As an Admin user, I should be able to create and verify a new plant",
+          "title": "As an Admin user, system should validate invalid Pin Code during update.",
           "ok": true,
           "tags": [],
           "tests": [
@@ -86,32 +86,18 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8898,
+                  "duration": 6305,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "steps": [
-                    {
-                      "title": "Scenario : Create a new plant with all mandatory fields",
-                      "duration": 2378
-                    },
-                    {
-                      "title": "Scenario : Verify the newly created plant is visible in the grid list",
-                      "duration": 195
-                    },
-                    {
-                      "title": "view data",
-                      "duration": 5009
-                    }
-                  ],
-                  "startTime": "2026-06-29T13:03:40.139Z",
+                  "startTime": "2026-06-30T09:35:50.917Z",
                   "annotations": [],
                   "attachments": [
                     {
                       "name": "screenshot",
                       "contentType": "image/png",
-                      "path": "D:\\Flairminds\\playwright\\test-results\\masterdata-As-an-Admin-use-755e0-eate-and-verify-a-new-plant\\test-finished-1.png"
+                      "path": "C:\\Users\\Admin\\Documents\\Flairminds\\TMS_Automation\\TMS_Automation\\test-results\\masterdata-As-an-Admin-use-c7778-lid-Pin-Code-during-update-\\test-finished-1.png"
                     }
                   ]
                 }
@@ -119,9 +105,9 @@
               "status": "expected"
             }
           ],
-          "id": "4b4181b362845b55ba48-be9296f232b1d3718ccc",
+          "id": "4b4181b362845b55ba48-b54d447c1adb5be6ab3e",
           "file": "masterdata.spec.ts",
-          "line": 6,
+          "line": 99,
           "column": 6
         }
       ]
@@ -129,8 +115,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-06-29T13:03:38.991Z",
-    "duration": 10966.682999999999,
+    "startTime": "2026-06-30T09:35:47.841Z",
+    "duration": 9847.685,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

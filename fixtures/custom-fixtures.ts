@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { MasterDataPage } from '../pages/MasterDataPage';
 import {users} from '../test-data/users'
+import { BasePage } from '../pages/BasePage';
 
 type Role='admin'|'transporter'|'operation'|'finance'; 
   
@@ -21,10 +22,13 @@ export const test = base.extend<MyFixtures>({
         const masterpage = new MasterDataPage(page);
         await use(masterpage);
     },
-    loginAs:async({loginpage},use)=>{
+    
+    loginAs:async({page,loginpage},use)=>{
         await use(async(role:Role)=>{
+            const basepage = new BasePage(page);
             const user=users[role];
             await loginpage.login(user.username,user.password)
+            await basepage.clicktoastmsg();
         });
     },
 

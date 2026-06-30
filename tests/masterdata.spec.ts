@@ -3,7 +3,7 @@ import { plantData } from "../test-data/Data";
 
 
 
-test.only('As an Admin user, I should be able to create and verify a new plant', async ({ loginAs, masterpage }) => {
+test('As an Admin user, I should be able to create and verify a new plant', async ({ loginAs, masterpage }) => {
     await loginAs("admin");
     const testdata = { ...plantData.validPlant1() };
     const plantcode = testdata.plantCode;
@@ -15,12 +15,10 @@ test.only('As an Admin user, I should be able to create and verify a new plant',
         const plantRow = await masterpage.getMasterTableRow(plantcode);
         await expect.soft(plantRow).toBeVisible();
     });
-    await test.step('view data',async({})=>{
-        await masterpage.clickViewBtn(plantcode);
-
-
+    await test.step('Edit data',async({})=>{   
     })
 });
+
 
 test('As an Admin user, I should not be able to create a plant with duplicate Plant Code.',async({loginAs,masterpage})=>{
     await loginAs("admin")
@@ -57,4 +55,52 @@ test('As an Admin user, system should display validation message for mandatory f
     await masterpage.verifyToastMessage("Missing: Company Code, Company Name, Plant Code, Plant Name, Address, City, State, Pin Code.");
 });
 
+test('As an Admin user, I should be able to edit existing plant details.',async({loginAs,masterpage})=>{
+    await loginAs("admin")
+    await masterpage.openMasterDataPage();
+    const plantcode='PL4882'
+    await masterpage.clickViewBtn(plantcode);
+    await masterpage.clickEditBtn()
+    await masterpage.clickupdateBtn();
+    await masterpage.verifyToastMessage("Plants updated successfully");
+});
 
+
+test('As an Admin user, I should be able to update Plant Name successfully.',async({loginAs,masterpage})=>{
+    await loginAs("admin")
+    await masterpage.openMasterDataPage();
+    const plantcode='PL4882'
+    await masterpage.clickViewBtn(plantcode);
+    await masterpage.updateFieldByName('plant_name','dddgg');
+    await masterpage.verifyToastMessage("Plants updated successfully");
+    let newplantname=await masterpage.getColumnCellData(plantcode,3)
+    expect('dddgg').toBe(newplantname);
+});
+
+test('As an Admin user, I should be able to activate/deactivate plant status.',async({loginAs,masterpage})=>{
+    await loginAs("admin")
+    await masterpage.openMasterDataPage();
+    const plantcode='PL4882'
+    await masterpage.clickViewBtn(plantcode);
+    await masterpage.updatestatus();
+    const status=await masterpage.getstatusvalue(plantcode,8);
+    expect('Verified Active').toBe(status);
+});
+
+test('As an Admin user, I should not be able to update plant with blank mandatory fields.',async({loginAs,masterpage})=>{
+    await loginAs("admin")
+    await masterpage.openMasterDataPage();
+    const plantcode='PL4882'
+    await masterpage.clickViewBtn(plantcode);
+    await masterpage.updateFieldByName('plant_name','');
+    await masterpage.verifyToastMessage("Missing: Plant Name.");
+});
+
+test.only('As an Admin user, system should validate invalid Pin Code during update.',async({loginAs,masterpage})=>{
+    await loginAs("admin")
+    await masterpage.openMasterDataPage();
+    const plantcode='PL4882'
+    await masterpage.clickViewBtn(plantcode);
+    await masterpage.updateFieldByName('pin_code','dfs');
+    await masterpage.verifyToastMessage("Pin Code: Must be 6 digits, cannot start with 0");
+});
