@@ -1,4 +1,4 @@
-import {Page,Locator} from '@playwright/test';
+import {Page,Locator, expect} from '@playwright/test';
 import { Menu } from '../components/menu';
 import { BasePage } from './BasePage';
 
@@ -27,7 +27,7 @@ readonly depot_Name:Locator;
 readonly region:Locator
 readonly contact_person:Locator;
 readonly phone_number:Locator;
-readonly Email_id:Locator;
+readonly email_id:Locator;
 readonly customers_tab:Locator;
 readonly customer_code:Locator;
 readonly customer_name:Locator;
@@ -41,6 +41,10 @@ readonly dist_contact_phone:Locator;
 readonly editBtn:Locator;
 readonly updateBtn:Locator;
 readonly status:Locator;
+readonly searchBox:Locator;
+readonly deleteBtn:Locator;
+readonly confirmationMsg:Locator;
+readonly regionValue:Locator;
 
 
 constructor(page:Page){
@@ -57,33 +61,48 @@ this.city=page.getByRole('textbox', { name: 'City'});
 this.state=page.getByRole('textbox', { name: 'State'});
 this.pin_code=page.getByRole('textbox', { name: 'Pin Code'});
 this.saveBtn=page.locator('button:has-text("Save")');
-this.export_excel= page.getByRole('button', { name: 'Export Excel' })
-this.bulk_upload= page.getByRole('button', { name: 'Bulk Upload' })
-this.cancelBtn= page.getByRole('button', { name: 'Cancel' })
-this.depot_tab= page.getByText('Depots')
-this.depot_code= page.getByRole('textbox', { name: 'Depot Code' })
-this.depot_Name= page.getByRole('textbox', { name: 'Depot Name' })
-this.region= page.getByRole('combobox', { name: 'Region' })
-this.contact_person= page.getByRole('textbox', { name: 'Contact Person' })
-this.phone_number= page.getByRole('textbox', { name: 'Phone Number' })
-this.Email_id= page.getByRole('textbox', { name: 'Email ID' })
-this.customers_tab=  page.getByText('Customers')
-this.customer_code=  page.getByRole('textbox', { name: 'Customer Code' })
-this.customer_name=  page.getByRole('textbox', { name: 'Customer Name' })
-this.customer_type=  page.getByRole('combobox', { name: 'Customer Type' })
-this.channel=  page.getByRole('combobox', { name: 'Channel' })
-this.sales_zone=  page.getByRole('combobox', { name: 'Sales Zone' })
-this.logistics_region=  page.getByRole('combobox', { name: 'Logistics Region' })
-this.sales_area=  page.getByRole('textbox', { name: 'Sales Area' })
-this.dist_contact_name=  page.getByRole('textbox', { name: 'Dist. Contact Name(optional)' })
-this.dist_contact_phone=  page.getByRole('textbox', { name: 'Dist. Contact Phone' })
-this.editBtn= page.getByRole('button', { name: 'Edit' })
-this.updateBtn= page.getByRole('button').filter({hasText:"Update"})
-this.status= page.locator('.ant-switch-inner' )
+this.export_excel= page.getByRole('button', { name: 'Export Excel' });
+this.bulk_upload= page.getByRole('button', { name: 'Bulk Upload' });
+this.cancelBtn= page.getByRole('button', { name: 'Cancel' });
+this.depot_tab= page.getByText('Depots');
+this.depot_code= page.getByRole('textbox', { name: 'Depot Code' });
+this.depot_Name= page.getByRole('textbox', { name: 'Depot Name' });
+this.region= page.getByRole('combobox', { name: 'Region' });
+this.contact_person= page.getByRole('textbox', { name: 'Contact Person' });
+this.phone_number= page.getByRole('textbox', { name: 'Phone Number' });
+this.email_id= page.getByRole('textbox', { name: 'Email ID' });
+this.customers_tab=  page.getByText('Customers');
+this.customer_code=  page.getByRole('textbox', { name: 'Customer Code' });
+this.customer_name=  page.getByRole('textbox', { name: 'Customer Name' });
+this.customer_type=  page.getByRole('combobox', { name: 'Customer Type' });
+this.channel=  page.getByRole('combobox', { name: 'Channel' });
+this.sales_zone=  page.getByRole('combobox', { name: 'Sales Zone' });
+this.logistics_region=  page.getByRole('combobox', { name: 'Logistics Region' });
+this.sales_area=  page.getByRole('textbox', { name: 'Sales Area' });
+this.dist_contact_name=  page.getByRole('textbox', { name: 'Dist. Contact Name(optional)' });
+this.dist_contact_phone=  page.getByRole('textbox', { name: 'Dist. Contact Phone' });
+this.editBtn= page.getByRole('button', { name: 'Edit' });
+this.updateBtn= page.getByRole('button').filter({hasText:"Update"});
+this.status= page.locator('.ant-switch-inner' );
+this.searchBox= page.getByPlaceholder('Type to search Plants...')
+this.deleteBtn=page.locator('.ant-modal-content').getByRole('button', { name: 'Delete' })
+this.confirmationMsg= page.getByRole('heading', { name: 'Confirm Deletion' });
+this.regionValue=page.locator('.ant-select-item-option-content').filter({hasText:"North"})
+}
+
+async getSearchResult(plantcode=''){
+  await this.searchBox.fill('plantcode');
+  return this.getMasterTableRow(plantcode);
+
 }
 
 async openMasterDataPage(){
     await this.menu.clickMasterData();
+}
+async selectDiffrentTab(locatorName: string){
+  await this.openMasterDataPage();
+  const targetLocator = (this as any)[locatorName];
+  await targetLocator.click();
 }
 async updatestatus(){
     await this.clickEditBtn()
@@ -100,9 +119,14 @@ async clickEditBtn(){
 async clickupdateBtn(){
     await this.updateBtn.click();
 }
-async clickupdateBtn2(data: { [key: string]: string }){
-    await this.fillPlantFields(data);
-    await this.updateBtn.click();
+async clickCancelBtn(){
+    await this.cancelBtn.click();
+}
+async clickDeleteBtn(){
+    await this.deleteBtn.click();
+}
+async getConfirmationmsg(){
+    return this.confirmationMsg
 }
 async clickSaveBtn(){
     await this.saveBtn.click();
@@ -110,6 +134,10 @@ async clickSaveBtn(){
 async clickViewBtn(plantcode=''){
   const row=await this.getMasterTableRow(plantcode);
   row.getByRole('button').first().click();
+}
+async clickTableDeleteBtn(plantcode=''){
+  const row=await this.getMasterTableRow(plantcode);
+  row.getByRole('button').last().click();
 }
 
 async updateFieldByName(locatorName: string, dataToInput: string) {
@@ -150,7 +178,47 @@ async createPlant(data: { [key: string]: string }){
     await this.clickSaveBtn();
 }
 
+get depotFieldMap(): { [key: string]: Locator } {
+    return {
+      depotCode: this.depot_code,
+      depotName: this.depot_Name,
+      address: this.address,
+      city: this.city,
+      state: this.state,
+      pinCode: this.pin_code,
+      contactPerson:this.contact_person,
+      phoneNumber:this.phone_number,
+      emailID:this.email_id
+    };
+  }
+
+async fillDepotFields(data: { [key: string]: string }) {
+    const fieldMap = this.depotFieldMap;
+    for (const key in data) {
+      if (fieldMap[key]) {
+        await fieldMap[key].fill(data[key]);
+      }
+    }
+}
+
+async selectRegion(){
+  await this.region.click();
+  await this.regionValue.click();
+}
+
+async createDepot(data: { [key: string]: string }){
+    await this.waitfornetworkstable();
+    await this.selectDiffrentTab('depot_tab');
+    await this.clickAddNewBtn();
+    await this.fillDepotFields(data);
+    await this.selectRegion();
+    await this.clickSaveBtn();
+}
+
+
+
 async getMasterTableRow(mastercode=''){
+  await this.page.waitForLoadState('networkidle')
   return this.page.locator('tr').filter({hasText:mastercode});
 }
 
@@ -162,15 +230,9 @@ async getColumnCellData(mastercode='',index=0){
 async getstatusvalue(mastercode='',index=0){
     const row=await this.getMasterTableRow(mastercode);
     const status= row.locator('td').nth(index).locator('div');
+    await this.page.waitForTimeout(1000)
     return await status.getAttribute('title');
 }
-
-
-
-
-
-
-
 
 
 }

@@ -9,14 +9,14 @@ export type PlantFormData = {
   pinCode: string;
 };
 
-
 export type DepotFormData = {
-  companyCode: string;
-  companyName: string;
-  plantCode: string;
-  plantName: string;
+  depotCode: string;
+  depotName: string;
   address: string;
   city: string;
   state: string;
   pinCode: string;
+  contactPerson:string;
+  phoneNumber:string;
+  emailID:string;
 };

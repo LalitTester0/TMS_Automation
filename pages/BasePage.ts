@@ -21,6 +21,7 @@ export class BasePage {
     async verifyToastMessage(expectedMessage: string) {
         const toastmsg=await this.toastMessage.textContent();
         expect.soft(toastmsg).toEqual(expectedMessage);
+        await this.clicktoastmsg();
 
     }
 }
