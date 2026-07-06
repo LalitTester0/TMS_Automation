@@ -1,4 +1,4 @@
-import { DepotFormData, PlantFormData } from './DataStructure';
+import { CustomerFormData, DepotFormData, PlantFormData } from './DataStructure';
 
 export const plantData = {
   validPlant1: (): PlantFormData => {
@@ -51,5 +51,34 @@ export const depotdata = {
     contactPerson: "Rahul Sharma",
     phoneNumber: "9876543210",
     emailID: "rahul.sharma@example.com"
+  }
+};
+
+
+export const customerdata = {
+  validData1: ():CustomerFormData=>{
+    const uniqueId=Math.floor(1000+Math.random()*9000);
+    return {
+    customerCode: `CUST${uniqueId}`,
+    customerName: `ABC Distributors ${uniqueId}`,
+	  salesArea: "West",
+    address: 'ABC Road',
+    state: 'West Bengal',
+    pinCode: '711302',
+    contactPerson: "Rahul Sharma",
+    phoneNumber: "9876543210",
+    emailID: "rahul.sharma@example.com"
+  }
+},
+  validdata2: {
+  customerCode: "CUST001",
+  customerName: "ABC Distributors",
+  salesArea: "West",
+  address: "MG Road, Pune",
+  state: "Maharashtra",
+  pinCode: "411001",
+  contactPerson: "Amit Sharma",
+  phoneNumber: "9876543210",
+  emailID: "amit.sharma@example.com",
   }
 };

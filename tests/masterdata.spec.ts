@@ -1,5 +1,5 @@
 import  {test, expect } from "../fixtures/custom-fixtures";
-import { depotdata, plantData } from "../test-data/Data";
+import { customerdata, depotdata, plantData } from "../test-data/Data";
 
 test('As an Admin user, I should be able to create and verify a new plant', async ({ loginAs, masterpage }) => {
     await loginAs("admin");
@@ -176,8 +176,6 @@ test('Create a new depot with all mandatory fields', async ({ loginAs, masterpag
             await masterpage.verifyToastMessage('Depots deleted successfully');
         })
     })
-
-    
 })
 
 test('Check all Mandatory fields in Depot tab', async ({ loginAs, masterpage }) => {
@@ -237,23 +235,31 @@ test('Check all Mandatory fields in Depot tab', async ({ loginAs, masterpage }) 
     })
 })
 
-    test('As an Admin user, I should not be able to delete depot linked with active Shipment or Trip.',async({loginAs,masterpage})=>{
+test('As an Admin user, I should not be able to delete depot linked with active Shipment or Trip.',async({loginAs,masterpage})=>{
     await loginAs("admin")
     await masterpage.selectDiffrentTab('depot_tab');
     const depotcode='1015';
     await masterpage.clickTableDeleteBtn(depotcode);
     await masterpage.clickDeleteBtn();
     await masterpage.verifyToastMessage('Cannot delete Depot: It is currently referenced as source or destination in Route SANKRAIL-AGARTALA.');
-    });
+});
 
-    test.only('As an Admin user, I should be able to search depot using search box.',async({loginAs,masterpage})=>{
+test('As an Admin user, I should be able to search depot using search box.',async({loginAs,masterpage})=>{
     await loginAs("admin")
     await masterpage.selectDiffrentTab('depot_tab');
     const depotcode='1015'
     const row=await masterpage.getSearchResult(depotcode);
     await expect(row).toBeVisible();
-    });
+});
 
-
+test('Create a new customer with all mandatory fields', async ({ loginAs, masterpage }) => {
+    await loginAs("admin");
+    const testdata = { ...customerdata.validData1() };
+    const customer_code = testdata.customerCode;
+    let newcustomer_name='Pune N'
+    await test.step('As an Admin user, I should be able to create a new customer with all mandatory fields.',async()=>{
+        await masterpage.createDepot(testdata)
+    })
+})
 
 

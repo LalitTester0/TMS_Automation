@@ -147,6 +147,24 @@ async updateFieldByName(locatorName: string, dataToInput: string) {
   await this.clickupdateBtn();
 }
 
+async getMasterTableRow(mastercode=''){
+  await this.page.waitForLoadState('networkidle')
+  return this.page.locator('tr').filter({hasText:mastercode});
+}
+
+async getColumnCellData(mastercode='',index=0){
+    const row=await this.getMasterTableRow(mastercode);
+    return await row.locator('td').nth(index).innerText();
+}
+
+async getstatusvalue(mastercode='',index=0){
+    const row=await this.getMasterTableRow(mastercode);
+    const status= row.locator('td').nth(index).locator('div');
+    await this.page.waitForTimeout(1000)
+    return await status.getAttribute('title');
+}
+
+
 get plantFieldMap(): { [key: string]: Locator } {
     return {
       companyCode: this.company_code,
@@ -215,23 +233,41 @@ async createDepot(data: { [key: string]: string }){
     await this.clickSaveBtn();
 }
 
+get customerFieldMap(): { [key: string]: Locator } {
+    return {
+      customerCode: this.customer_code,
+      customerName: this.customer_name,
+      salesArea: this.sales_area,
+      address:this.address,
+      state: this.state,
+      pinCode: this.pin_code,
+      contactPerson:this.contact_person,
+      phoneNumber:this.phone_number,
+      emailID:this.email_id
+    };
+  }
 
-
-async getMasterTableRow(mastercode=''){
-  await this.page.waitForLoadState('networkidle')
-  return this.page.locator('tr').filter({hasText:mastercode});
+async fillCustomerFields(data: { [key: string]: string }) {
+    const fieldMap = this.customerFieldMap;
+    for (const key in data) {
+      if (fieldMap[key]) {
+        await fieldMap[key].fill(data[key]);
+      }
+    }
 }
 
-async getColumnCellData(mastercode='',index=0){
-    const row=await this.getMasterTableRow(mastercode);
-    return await row.locator('td').nth(index).innerText();
+async selectlogisticsRegion(){
+  await this.region.click();
+  await this.regionValue.click();
 }
 
-async getstatusvalue(mastercode='',index=0){
-    const row=await this.getMasterTableRow(mastercode);
-    const status= row.locator('td').nth(index).locator('div');
-    await this.page.waitForTimeout(1000)
-    return await status.getAttribute('title');
+async createCustomer(data: { [key: string]: string }){
+    await this.waitfornetworkstable();
+    await this.selectDiffrentTab('customers_tab');
+    await this.clickAddNewBtn();
+    await this.fillCustomerFields(data);
+    await this.selectlogisticsRegion();
+    //await this.clickSaveBtn();
 }
 
 
