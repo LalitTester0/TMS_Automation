@@ -1,5 +1,5 @@
 import  {test, expect } from "../fixtures/custom-fixtures";
-import { customerdata, depotdata, plantData } from "../test-data/Data";
+import { customerdata, depotdata, plantData, skudata } from "../test-data/Data";
 
 test('As an Admin user, I should be able to create and verify a new plant', async ({ loginAs, masterpage }) => {
     await loginAs("admin");
@@ -322,7 +322,7 @@ test('Create a new customer with all mandatory fields', async ({ loginAs, master
 
 })
 
-test.only('Check all Mandatory fields in Customers tab', async ({ loginAs, masterpage }) => {
+test('Check all Mandatory fields in Customers tab', async ({ loginAs, masterpage }) => {
     test.setTimeout(60000); 
     await loginAs("admin");
     const testdata = { ...customerdata.validData1() };
@@ -409,4 +409,58 @@ test.only('Check all Mandatory fields in Customers tab', async ({ loginAs, maste
 
 })
 
+test.only('Create a new SKU with all mandatory fields', async ({ loginAs, masterpage }) => {
+    await loginAs("admin");
+    const testdata = { ...skudata.validData1() };
+    const sku_code = testdata.sku_Code;
+    let sku_nam='Premium 1';
+    await test.step('As an Admin user, I should be able to create a new SKU with all mandatory fields.', async () => {
+        await masterpage.createSKU(testdata);
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('SKUs added successfully'); 
+    });
+
+    await test.step('As an Admin user, newly created SKU should display in SKU listing page.', async () => {
+        const skuRow = await masterpage.getMasterTableRow(sku_code);
+        await expect.soft(skuRow).toBeVisible(); 
+    });
+    await test.step('As an Admin user, I should be able to edit existing sku details.',async()=>{
+        await masterpage.clickViewBtn(sku_code);
+        await masterpage.clickEditBtn()
+        await masterpage.clickupdateBtn();
+        await masterpage.verifyToastMessage("SKUs updated successfully")
+    })
+    await test.step('As an Admin user, I should be able to update sku Name successfully.',async()=>{
+        await masterpage.clickViewBtn(sku_code);
+        await masterpage.updateFieldByName('sku_Name',sku_nam);
+        await masterpage.verifyToastMessage("SKUs updated successfully");
+    })
+    await test.step('As an Admin user, updated sku details should reflect in listing page.',async()=>{
+        const skuRow = await masterpage.getMasterTableRow(sku_nam);
+        await expect.soft(skuRow).toBeVisible(); 
+    })
+    await test.step('As an Admin user, I should be able to activate/deactivate sku status.',async()=>{
+        await masterpage.clickViewBtn(sku_code);
+        await masterpage.updatestatus();
+        const status=await masterpage.getstatusvalue(sku_code,7);
+        await masterpage.clicktoastmsg();
+        expect.soft('Not Active').toBe(status);
+    })
+    await test.step('As an Admin user, I should not be able to update sku with blank mandatory fields.',async()=>{
+        await masterpage.clickViewBtn(sku_code);
+        await masterpage.updateFieldByName('sku_Name','');
+        await masterpage.verifyToastMessage("Missing: Sku Name.");
+        await masterpage.clickCancelBtn()
+    })
+    await test.step('As an Admin user, system should display confirmation popup before deletion.',async()=>{
+        await masterpage.clickTableDeleteBtn(sku_code);
+        const confirmationmsg=await masterpage.getConfirmationmsg();
+        await expect.soft(confirmationmsg).toBeVisible();
+        await test.step('As an Admin user, I should be able to delete depot record successfully.',async()=>{
+            await masterpage.clickDeleteBtn();
+            await masterpage.verifyToastMessage('SKUs deleted successfully');
+        })
+    })
+
+});
 

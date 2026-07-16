@@ -1,4 +1,4 @@
-import { CustomerFormData, DepotFormData, PlantFormData } from './DataStructure';
+import { CustomerFormData, DepotFormData, PlantFormData, SKUFormData } from './DataStructure';
 
 export const plantData = {
   validPlant1: (): PlantFormData => {
@@ -70,17 +70,26 @@ export const customerdata = {
     phoneNumber: "9876543210",
     emailID: "rahul.sharma@example.com"
   }
-},
-  validdata2: {
-  customerCode: "CUST001",
-  customerName: "ABC Distributors",
-  salesArea: "West",
-  address: "MG Road, Pune",
-  city: "Pune",
-  state: "Maharashtra",
-  pinCode: "411001",
-  contactPerson: "Amit Sharma",
-  phoneNumber: "9876543210",
-  emailID: "amit.sharma@example.com",
+}
+};
+
+export const skudata = {
+  validData1: (): SKUFormData => {
+    const uniqueId = Math.floor(1000 + Math.random() * 9000);
+    return {
+      sku_Code: `SKU-${uniqueId}`,
+      sku_Name: `Premium Product v${uniqueId}`,
+      brand: "BrandX",
+      category:"General",
+      description: `High-quality automated test item instance ${uniqueId}`,
+      price: "499.99",
+      case_pack: "12",
+      weight: "1.5",
+      volume: "0.05",
+      shelf_Life: "365",
+      length: "30",
+      width: "20",
+      height: "15"
+    };
   }
 };

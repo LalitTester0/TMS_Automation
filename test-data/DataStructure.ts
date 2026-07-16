@@ -32,3 +32,19 @@ export type CustomerFormData = {
   emailID:string;
 };
 
+export type SKUFormData = {
+  sku_Code: string;
+  sku_Name: string;
+  brand: string;
+  category:string;
+  description: string;
+  price:string;
+  case_pack: string;
+  weight: string;
+  volume:string;
+  shelf_Life:string;
+  length:string;
+  width:string;
+  height:string;
+};
+

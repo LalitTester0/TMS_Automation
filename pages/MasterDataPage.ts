@@ -59,6 +59,7 @@ readonly shelf_Life: Locator;
 readonly length: Locator;
 readonly width: Locator;
 readonly height: Locator;
+readonly sku_tab:Locator
 
 
 
@@ -104,6 +105,7 @@ this.searchBox= page.locator('.ant-input')
 this.deleteBtn=page.locator('.ant-modal-content').getByRole('button', { name: 'Delete' })
 this.confirmationMsg= page.getByRole('heading', { name: 'Confirm Deletion' });
 this.regionValue=page.locator('.ant-select-item-option-content').filter({hasText:"North"})
+this.sku_tab=  page.getByText('SKUs');
  this.sku_Code = page.getByRole('textbox', { name: 'SKU Code' });
 this.sku_Name = page.getByRole('textbox', { name: 'SKU Name' });
 this.brand =page.getByRole('textbox', { name: 'Brand' });
@@ -112,11 +114,11 @@ this.price = page.getByPlaceholder('Price');
 this.case_pack = page.getByPlaceholder('Case Pack');
 this.weight = page.getByPlaceholder('kg');
 this.shelf_Life = page.getByPlaceholder('Days');
-this.length = page.getByPlaceholder('L');
-this.width = page.getByPlaceholder('W');
-this.height = page.getByPlaceholder('H');
+this.length = page.locator('#length_cm');
+this.width = page.locator('#width_cm');
+this.height = page.locator('#height_cm');
 this.category=page.getByRole('textbox', { name: 'General Category' });
-this.volume= page.getByPlaceholder('Auto-calculated');
+this.volume= page.locator('#case_volume_cft');
 }
 
 async getSearchResult(plantcode=''){
@@ -303,6 +305,46 @@ async createCustomer(data: { [key: string]: string }){
     await this.clickAddNewBtn();
     await this.fillCustomerFields(data);
 }
+
+
+  get skuFieldMap(): { [key: string]: Locator } {
+    return {
+      sku_Code: this.sku_Code,
+      sku_Name: this.sku_Name,
+      brand: this.brand,
+      category:this.category,
+      description: this.description,
+      price: this.price,
+      case_pack: this.case_pack,
+      weight: this.weight,
+      shelf_Life: this.shelf_Life,
+      length: this.length,
+      width: this.width,
+      height: this.height
+    };
+  }
+
+  async fillskuFields(data: { [key: string]: string }) {
+    const fieldMap = this.skuFieldMap;
+    for (const key in data) {
+      if (fieldMap[key]) {
+        await fieldMap[key].fill(data[key]);
+      }
+    }
+  }
+
+  async createSKU(data: { [key: string]: string }) {
+    await this.waitfornetworkstable();
+    await this.selectDiffrentTab('sku_tab');
+    await this.clickAddNewBtn();
+    await this.fillskuFields(data);
+  }
+
+
+
+
+
+
 
 
 }
