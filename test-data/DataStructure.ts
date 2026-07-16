@@ -24,9 +24,11 @@ export type CustomerFormData = {
   customerName: string;
   salesArea: string;
   address: string;
+  city:string;
   state: string;
   pinCode: string;
   contactPerson:string;
   phoneNumber:string;
   emailID:string;
 };
+

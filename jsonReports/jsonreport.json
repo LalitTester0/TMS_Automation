@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "D:\\Flairminds\\playwright\\playwright.config.ts",
-    "rootDir": "D:/Flairminds/playwright/tests",
+    "configFile": "C:\\Users\\Admin\\Documents\\Flairminds\\TMS_Automation\\TMS_Automation\\playwright.config.ts",
+    "rootDir": "C:/Users/Admin/Documents/Flairminds/TMS_Automation/TMS_Automation/tests",
     "forbidOnly": false,
     "fullyParallel": false,
     "globalSetup": null,
@@ -16,7 +16,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "D:/Flairminds/playwright/test-results",
+        "outputDir": "C:/Users/Admin/Documents/Flairminds/TMS_Automation/TMS_Automation/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -24,7 +24,7 @@
         },
         "id": "",
         "name": "",
-        "testDir": "D:/Flairminds/playwright/tests",
+        "testDir": "C:/Users/Admin/Documents/Flairminds/TMS_Automation/TMS_Automation/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -60,7 +60,7 @@
     "updateSnapshots": "missing",
     "updateSourceMethod": "patch",
     "version": "1.59.1",
-    "workers": 2,
+    "workers": 4,
     "webServer": null
   },
   "suites": [
@@ -71,12 +71,12 @@
       "line": 0,
       "specs": [
         {
-          "title": "As an Admin user, I should be able to search depot using search box.",
+          "title": "Check all Mandatory fields in Customers tab",
           "ok": true,
           "tags": [],
           "tests": [
             {
-              "timeout": 30000,
+              "timeout": 60000,
               "annotations": [],
               "expectedStatus": "passed",
               "projectId": "",
@@ -86,18 +86,48 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3117,
+                  "duration": 32191,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-07-02T05:58:29.469Z",
+                  "steps": [
+                    {
+                      "title": "As an Admin user, I should not be able to create customer without customer Code.",
+                      "duration": 3839
+                    },
+                    {
+                      "title": "As an Admin user, I should not be able to create customer without customer Name.",
+                      "duration": 4039
+                    },
+                    {
+                      "title": "As an Admin user, I should not be able to create customer without selecting logistics Region.",
+                      "duration": 3569
+                    },
+                    {
+                      "title": "As an Admin user, I should not be able to create customer with invalid Pin Code.",
+                      "duration": 3627
+                    },
+                    {
+                      "title": "As an Admin user, I should not be able to create customer with invalid Email ID.",
+                      "duration": 3007
+                    },
+                    {
+                      "title": "As an Admin user, I should not be able to create customer with invalid Phone Number.",
+                      "duration": 4101
+                    },
+                    {
+                      "title": "As an Admin user, system should display validation message for blank mandatory fields.",
+                      "duration": 2449
+                    }
+                  ],
+                  "startTime": "2026-07-10T07:15:12.593Z",
                   "annotations": [],
                   "attachments": [
                     {
                       "name": "screenshot",
                       "contentType": "image/png",
-                      "path": "D:\\Flairminds\\playwright\\test-results\\masterdata-As-an-Admin-use-e4636-rch-depot-using-search-box-\\test-finished-1.png"
+                      "path": "C:\\Users\\Admin\\Documents\\Flairminds\\TMS_Automation\\TMS_Automation\\test-results\\masterdata-Check-all-Mandatory-fields-in-Customers-tab\\test-finished-1.png"
                     }
                   ]
                 }
@@ -105,18 +135,18 @@
               "status": "expected"
             }
           ],
-          "id": "4b4181b362845b55ba48-9efc0e83136bc1c8b2c9",
+          "id": "4b4181b362845b55ba48-df6a070eab306f268f2b",
           "file": "masterdata.spec.ts",
-          "line": 249,
-          "column": 10
+          "line": 325,
+          "column": 6
         }
       ]
     }
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-07-02T05:58:28.320Z",
-    "duration": 4542.895,
+    "startTime": "2026-07-10T07:15:11.222Z",
+    "duration": 34096.228,
     "expected": 1,
     "skipped": 0,
     "unexpected": 0,

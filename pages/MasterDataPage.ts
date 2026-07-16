@@ -45,6 +45,21 @@ readonly searchBox:Locator;
 readonly deleteBtn:Locator;
 readonly confirmationMsg:Locator;
 readonly regionValue:Locator;
+readonly dist_contact_email:Locator;
+readonly sku_Code: Locator;
+readonly sku_Name: Locator;
+readonly brand: Locator;
+readonly description: Locator;
+readonly category:Locator;
+readonly price: Locator;
+readonly case_pack: Locator;
+readonly weight: Locator;
+readonly volume: Locator;
+readonly shelf_Life: Locator;
+readonly length: Locator;
+readonly width: Locator;
+readonly height: Locator;
+
 
 
 constructor(page:Page){
@@ -79,8 +94,9 @@ this.channel=  page.getByRole('combobox', { name: 'Channel' });
 this.sales_zone=  page.getByRole('combobox', { name: 'Sales Zone' });
 this.logistics_region=  page.getByRole('combobox', { name: 'Logistics Region' });
 this.sales_area=  page.getByRole('textbox', { name: 'Sales Area' });
-this.dist_contact_name=  page.getByRole('textbox', { name: 'Dist. Contact Name(optional)' });
-this.dist_contact_phone=  page.getByRole('textbox', { name: 'Dist. Contact Phone' });
+this.dist_contact_name=  page.locator('#contact');
+this.dist_contact_phone=  page.locator('#phone');
+this.dist_contact_email= page.locator('#email');
 this.editBtn= page.getByRole('button', { name: 'Edit' });
 this.updateBtn= page.getByRole('button').filter({hasText:"Update"});
 this.status= page.locator('.ant-switch-inner' );
@@ -88,6 +104,19 @@ this.searchBox= page.locator('.ant-input')
 this.deleteBtn=page.locator('.ant-modal-content').getByRole('button', { name: 'Delete' })
 this.confirmationMsg= page.getByRole('heading', { name: 'Confirm Deletion' });
 this.regionValue=page.locator('.ant-select-item-option-content').filter({hasText:"North"})
+ this.sku_Code = page.getByRole('textbox', { name: 'SKU Code' });
+this.sku_Name = page.getByRole('textbox', { name: 'SKU Name' });
+this.brand =page.getByRole('textbox', { name: 'Brand' });
+this.description = page.getByRole('textbox', { name: 'Description' });
+this.price = page.getByPlaceholder('Price');
+this.case_pack = page.getByPlaceholder('Case Pack');
+this.weight = page.getByPlaceholder('kg');
+this.shelf_Life = page.getByPlaceholder('Days');
+this.length = page.getByPlaceholder('L');
+this.width = page.getByPlaceholder('W');
+this.height = page.getByPlaceholder('H');
+this.category=page.getByRole('textbox', { name: 'General Category' });
+this.volume= page.getByPlaceholder('Auto-calculated');
 }
 
 async getSearchResult(plantcode=''){
@@ -239,11 +268,12 @@ get customerFieldMap(): { [key: string]: Locator } {
       customerName: this.customer_name,
       salesArea: this.sales_area,
       address:this.address,
+      city:this.city,
       state: this.state,
       pinCode: this.pin_code,
-      contactPerson:this.contact_person,
-      phoneNumber:this.phone_number,
-      emailID:this.email_id
+      contactPerson:this.dist_contact_name,
+      phoneNumber:this.dist_contact_phone,
+      emailID:this.dist_contact_email     
     };
   }
 
@@ -261,13 +291,17 @@ async selectlogisticsRegion(){
   await this.regionValue.click();
 }
 
+async selectDiffrentdropdown(locatorName: string,value:string){
+  const targetLocator = (this as any)[locatorName];
+  await targetLocator.click();
+  await this.page.locator(`div [title="${value}"]`).click();
+}
+
 async createCustomer(data: { [key: string]: string }){
     await this.waitfornetworkstable();
     await this.selectDiffrentTab('customers_tab');
     await this.clickAddNewBtn();
     await this.fillCustomerFields(data);
-    await this.selectlogisticsRegion();
-    //await this.clickSaveBtn();
 }
 
 

@@ -258,8 +258,155 @@ test('Create a new customer with all mandatory fields', async ({ loginAs, master
     const customer_code = testdata.customerCode;
     let newcustomer_name='Pune N'
     await test.step('As an Admin user, I should be able to create a new customer with all mandatory fields.',async()=>{
-        await masterpage.createDepot(testdata)
+        await masterpage.createCustomer(testdata)
+        await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+        await masterpage.selectDiffrentdropdown('channel','GT');
+        await masterpage.selectDiffrentdropdown('sales_zone','North');
+        await masterpage.selectDiffrentdropdown('logistics_region','Pan India');
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Customers added successfully');
     })
+    await test.step('As an Admin user, newly created customer should display in Depot listing page.',async()=>{
+        const customerRow = await masterpage.getMasterTableRow(customer_code);
+        await expect.soft(customerRow).toBeVisible(); 
+    })
+    await test.step('As an Admin user, I should be able to edit existing customer details.',async()=>{
+        await masterpage.clickViewBtn(customer_code);
+        await masterpage.clickEditBtn();
+        await masterpage.clickupdateBtn();
+        await masterpage.verifyToastMessage("Customers updated successfully")
+    })  
+    await test.step('As an Admin user, I should be able to update customer Name successfully.',async()=>{
+        await masterpage.clickViewBtn(customer_code);
+        await masterpage.updateFieldByName('customer_name',newcustomer_name);
+        await masterpage.verifyToastMessage("Customers updated successfully");
+    })
+    await test.step('As an Admin user, updated customer details should reflect in listing page.',async()=>{
+        const customerRow = await masterpage.getMasterTableRow(newcustomer_name);
+        await expect.soft(customerRow).toBeVisible(); 
+    })
+    await test.step('As an Admin user, I should be able to activate/deactivate customer status.',async()=>{
+        await masterpage.clickViewBtn(customer_code);
+        await masterpage.updatestatus();
+        const status=await masterpage.getstatusvalue(customer_code,8);
+        await masterpage.clicktoastmsg();
+        expect.soft('Not Active').toBe(status);
+    })
+    await test.step('As an Admin user, I should not be able to update customer with blank mandatory fields.',async()=>{
+        await masterpage.clickViewBtn(customer_code);
+        await masterpage.updateFieldByName('customer_name','');
+        await masterpage.verifyToastMessage("Missing: Customer Name.");
+        await masterpage.clickCancelBtn()
+    })
+    await test.step('As an Admin user, I should not be able to update customer with invalid Email ID.',async()=>{
+        await masterpage.clickViewBtn(customer_code);
+        await masterpage.updateFieldByName('dist_contact_email','sff');
+        await masterpage.verifyToastMessage("Dist. Contact Email: Invalid");
+        await masterpage.clickCancelBtn()
+    })
+    await test.step('As an Admin user, I should not be able to update customers with invalid Phone Number.',async()=>{
+        await masterpage.clickViewBtn(customer_code);
+        await masterpage.updateFieldByName('dist_contact_phone','7474');
+        await masterpage.verifyToastMessage("Missing: Dist. Contact Phone.");
+        await masterpage.clickCancelBtn()
+    })
+    await test.step('As an Admin user, system should display confirmation popup before deletion.',async()=>{
+        await masterpage.clickTableDeleteBtn(customer_code);
+        const confirmationmsg=await masterpage.getConfirmationmsg();
+        await expect.soft(confirmationmsg).toBeVisible();
+        await test.step('As an Admin user, I should be able to delete customer record successfully.',async()=>{
+            await masterpage.clickDeleteBtn();
+            await masterpage.verifyToastMessage('Customers deleted successfully');
+        })
+    })
+
+})
+
+test.only('Check all Mandatory fields in Customers tab', async ({ loginAs, masterpage }) => {
+    test.setTimeout(60000); 
+    await loginAs("admin");
+    const testdata = { ...customerdata.validData1() };
+    const customerCode = testdata.customerCode;
+    await test.step('As an Admin user, I should not be able to create customer without customer Code.',async()=>{
+    await masterpage.createCustomer({...testdata,customerCode:''})
+    await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+    await masterpage.selectDiffrentdropdown('channel','GT');
+    await masterpage.selectDiffrentdropdown('sales_zone','North');
+    await masterpage.selectDiffrentdropdown('logistics_region','Pan India');
+    await masterpage.clickSaveBtn();
+    await masterpage.verifyToastMessage('Missing: Party Code.');
+     })
+    await test.step('As an Admin user, I should not be able to create customer without customer Name.',async()=>{
+        await masterpage.clickCancelBtn();
+        await masterpage.clickAddNewBtn();
+        await masterpage.fillCustomerFields({...testdata,customerName:''});
+        await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+        await masterpage.selectDiffrentdropdown('channel','GT');
+        await masterpage.selectDiffrentdropdown('sales_zone','North');
+        await masterpage.selectDiffrentdropdown('logistics_region','Pan India');
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Missing: Customer Name.');
+    })
+    await test.step('As an Admin user, I should not be able to create customer without selecting logistics Region.',async()=>{
+        await masterpage.clickCancelBtn();
+        await masterpage.clickAddNewBtn();
+        await masterpage.fillCustomerFields({...testdata});
+        await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+        await masterpage.selectDiffrentdropdown('channel','GT');
+        await masterpage.selectDiffrentdropdown('sales_zone','North');
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Missing: Logistics Region.');
+    })
+    await test.step('As an Admin user, I should not be able to create customer with invalid Pin Code.',async()=>{
+        await masterpage.clickCancelBtn();
+        await masterpage.clickAddNewBtn();
+        await masterpage.fillCustomerFields({...testdata,pinCode:'7878'});
+        await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+        await masterpage.selectDiffrentdropdown('channel','GT');
+        await masterpage.selectDiffrentdropdown('sales_zone','North');
+        await masterpage.selectDiffrentdropdown('logistics_region','Pan India');
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Mother Pin Code: Must be 6 digits, cannot start with 0');
+    })
+    await test.step('As an Admin user, I should not be able to create customer with invalid Email ID.',async()=>{
+        await masterpage.clickCancelBtn();
+        await masterpage.clickAddNewBtn();
+        await masterpage.fillCustomerFields({...testdata,emailID:'7878'});
+        await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+        await masterpage.selectDiffrentdropdown('channel','GT');
+        await masterpage.selectDiffrentdropdown('sales_zone','North');
+        await masterpage.selectDiffrentdropdown('logistics_region','Pan India');
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Dist. Contact Email: Invalid');
+    })
+    await test.step('As an Admin user, I should not be able to create customer with invalid Phone Number.',async()=>{
+        await masterpage.clickCancelBtn();
+        await masterpage.clickAddNewBtn();
+        await masterpage.fillCustomerFields({...testdata,phoneNumber:'7878'});
+        await masterpage.selectDiffrentdropdown('customer_type','Distributor');
+        await masterpage.selectDiffrentdropdown('channel','GT');
+        await masterpage.selectDiffrentdropdown('sales_zone','North');
+        await masterpage.selectDiffrentdropdown('logistics_region','Pan India');
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Missing: Dist. Contact Phone.');
+    })
+    await test.step('As an Admin user, system should display validation message for blank mandatory fields.',async()=>{
+        await masterpage.clickCancelBtn();
+        await masterpage.clickAddNewBtn();
+        const data={}
+        await masterpage.fillCustomerFields(data);
+        await masterpage.clickSaveBtn();
+        await masterpage.verifyToastMessage('Missing: Party Code, Customer Name, Customer Type, Channel, Sales Zone, Logistics Region, Sales Area, Address, City, Mother Pin Code, Dist. Contact Phone.');
+    })
+
+
+
+
+
+
+
+
+
 })
 
 
